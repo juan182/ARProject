@@ -1,0 +1,22 @@
+{
+  "preguntas": [
+    {
+      "pregunta": "¿En qué año se fundó la universidad?",
+      "respuesta1": "1970",
+      "respuesta2": "1980",
+      "respuesta3": "1990",
+      "respuesta4": "2000",
+      "respuestaCorrecta": "1970",
+      "decada": "1970"
+    },
+    {
+      "pregunta": "¿Qué innovación destacó en los 80?",
+      "respuesta1": "Nuevas carreras",
+      "respuesta2": "Nuevos edificios",
+      "respuesta3": "Nuevos profesores",
+      "respuesta4": "Nuevo logo",
+      "respuestaCorrecta": "Nuevas carreras",
+      "decada": "1980"
+    }
+  ]
+}
