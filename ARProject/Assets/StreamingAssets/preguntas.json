@@ -1,0 +1,40 @@
+{
+  "preguntas": [
+    {
+      "pregunta": "¿En qué año se fundó la Universidad Autónoma de Occidente (UAO)?",
+      "respuesta1": "1969",
+      "respuesta2": "1970",
+      "respuesta3": "1971",
+      "respuesta4": "1972",
+      "respuestaCorrecta": "1970",
+      "decada": "UAO"
+    },
+    {
+      "pregunta": "¿En qué año el CUAO se transformó oficialmente en Universidad Autónoma de Occidente (UAO)?",
+      "respuesta1": "1975",
+      "respuesta2": "1974",
+      "respuesta3": "1976",
+      "respuesta4": "1978",
+      "respuestaCorrecta": "1975",
+      "decada": "UAO"
+    },
+    {
+      "pregunta": "¿Cuál fue una de las primeras carreras ofrecidas por la UAO?",
+      "respuesta1": "Medicina",
+      "respuesta2": "Derecho",
+      "respuesta3": "Ingeniería Industrial",
+      "respuesta4": "Comunicación Social",
+      "respuestaCorrecta": "Ingeniería Industrial",
+      "decada": "UAO"
+    },
+    {
+      "pregunta": "¿Quién fue una de las figuras principales en la creación del CUAO?",
+      "respuesta1": "Rodrigo Lloreda Caicedo",
+      "respuesta2": "Álvaro Pío Valencia",
+      "respuesta3": "Alfonso Bonilla Aragón",
+      "respuesta4": "Belisario Betancur",
+      "respuestaCorrecta": "Álvaro Pío Valencia",
+      "decada": "UAO"
+    }
+  ]
+}
