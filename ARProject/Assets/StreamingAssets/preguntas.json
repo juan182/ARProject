@@ -7,7 +7,7 @@
       "respuesta3": "1971",
       "respuesta4": "1972",
       "respuestaCorrecta": "1970",
-      "decada": "UAO"
+      "decada": "1970"
     },
     {
       "pregunta": "¿En qué año el CUAO se transformó oficialmente en Universidad Autónoma de Occidente (UAO)?",
@@ -16,7 +16,7 @@
       "respuesta3": "1976",
       "respuesta4": "1978",
       "respuestaCorrecta": "1975",
-      "decada": "UAO"
+      "decada": "1970"
     },
     {
       "pregunta": "¿Cuál fue una de las primeras carreras ofrecidas por la UAO?",
@@ -25,7 +25,7 @@
       "respuesta3": "Ingeniería Industrial",
       "respuesta4": "Comunicación Social",
       "respuestaCorrecta": "Ingeniería Industrial",
-      "decada": "UAO"
+      "decada": "1970"
     },
     {
       "pregunta": "¿Quién fue una de las figuras principales en la creación del CUAO?",
@@ -34,7 +34,118 @@
       "respuesta3": "Alfonso Bonilla Aragón",
       "respuesta4": "Belisario Betancur",
       "respuestaCorrecta": "Álvaro Pío Valencia",
-      "decada": "UAO"
+      "decada": "1970"
+    },
+
+    {
+      "pregunta": "¿Qué lema caracterizó a la Universidad durante la década de los 80?",
+      "respuesta1": "Organizar el presente y pensar a futuro",
+      "respuesta2": "Crecer con conocimiento",
+      "respuesta3": "Ciencia y compromiso social",
+      "respuesta4": "Educación para el cambio",
+      "respuestaCorrecta": "Organizar el presente y pensar a futuro",
+      "decada": "1980"
+    },
+    {
+      "pregunta": "¿Qué importante logro académico obtuvo la UAO en 1983?",
+      "respuesta1": "Se creó la Facultad de Ingeniería",
+      "respuesta2": "Se inauguró la primera emisora universitaria",
+      "respuesta3": "Se amplió la sede universitaria",
+      "respuesta4": "Se fundó el programa de Comunicación Social",
+      "respuestaCorrecta": "Se creó la Facultad de Ingeniería",
+      "decada": "1980"
+    },
+    {
+      "pregunta": "¿Qué infraestructura comenzó a consolidarse en los 80?",
+      "respuesta1": "El campus universitario en Valle del Lili",
+      "respuesta2": "El bloque administrativo central",
+      "respuesta3": "La biblioteca digital",
+      "respuesta4": "Los laboratorios de física",
+      "respuestaCorrecta": "El campus universitario en Valle del Lili",
+      "decada": "1980"
+    },
+    {
+      "pregunta": "¿Qué actividad estudiantil fue muy representativa en los años 80?",
+      "respuesta1": "El teatro universitario y la radio",
+      "respuesta2": "El ajedrez y los torneos deportivos",
+      "respuesta3": "La revista científica",
+      "respuesta4": "Las ferias tecnológicas",
+      "respuestaCorrecta": "El teatro universitario y la radio",
+      "decada": "1980"
+    },
+
+    {
+      "pregunta": "¿Qué programa académico obtuvo reconocimiento nacional durante los 90?",
+      "respuesta1": "Comunicación Social",
+      "respuesta2": "Derecho",
+      "respuesta3": "Administración",
+      "respuesta4": "Psicología",
+      "respuestaCorrecta": "Comunicación Social",
+      "decada": "1990"
+    },
+    {
+      "pregunta": "¿Qué acontecimiento marcó el crecimiento institucional en los 90?",
+      "respuesta1": "La inauguración del campus en Valle del Lili",
+      "respuesta2": "La primera transmisión de televisión educativa",
+      "respuesta3": "La creación del programa de Arquitectura",
+      "respuesta4": "El cambio de rector",
+      "respuestaCorrecta": "La inauguración del campus en Valle del Lili",
+      "decada": "1990"
+    },
+    {
+      "pregunta": "¿Qué hito tecnológico destacó en la universidad en los 90?",
+      "respuesta1": "Implementación de redes informáticas y laboratorios de cómputo",
+      "respuesta2": "Creación de la emisora UAO Estéreo",
+      "respuesta3": "Inauguración de la biblioteca Mario Carvajal",
+      "respuesta4": "Lanzamiento de la página web institucional",
+      "respuestaCorrecta": "Implementación de redes informáticas y laboratorios de cómputo",
+      "decada": "1990"
+    },
+    {
+      "pregunta": "¿Qué valor institucional se fortaleció durante la década de los 90?",
+      "respuesta1": "Responsabilidad social",
+      "respuesta2": "Innovación tecnológica",
+      "respuesta3": "Internacionalización",
+      "respuesta4": "Investigación aplicada",
+      "respuestaCorrecta": "Responsabilidad social",
+      "decada": "1990"
+    },
+
+    {
+      "pregunta": "¿Qué logro institucional importante obtuvo la UAO en los años 2000?",
+      "respuesta1": "Acreditación de Alta Calidad",
+      "respuesta2": "Cambio de nombre institucional",
+      "respuesta3": "Creación del primer programa técnico",
+      "respuesta4": "Apertura de una nueva sede fuera del país",
+      "respuestaCorrecta": "Acreditación de Alta Calidad",
+      "decada": "2000"
+    },
+    {
+      "pregunta": "¿Qué iniciativa fortaleció la relación de la UAO con la comunidad?",
+      "respuesta1": "El Plan Institucional de Participación Ciudadana (PIPC)",
+      "respuesta2": "El programa de becas internacionales",
+      "respuesta3": "La feria de empleabilidad",
+      "respuesta4": "El centro de innovación empresarial",
+      "respuestaCorrecta": "El Plan Institucional de Participación Ciudadana (PIPC)",
+      "decada": "2000"
+    },
+    {
+      "pregunta": "¿Qué papel ha tenido la UAO en el desarrollo ambiental y sostenible reciente?",
+      "respuesta1": "Implementar proyectos de sostenibilidad y campus verde",
+      "respuesta2": "Reducir programas académicos",
+      "respuesta3": "Cerrar laboratorios de investigación",
+      "respuesta4": "Enfocarse solo en la educación virtual",
+      "respuestaCorrecta": "Implementar proyectos de sostenibilidad y campus verde",
+      "decada": "2000"
+    },
+    {
+      "pregunta": "¿Qué representa la UAO actualmente según su visión institucional?",
+      "respuesta1": "Una universidad comprometida con el desarrollo sostenible, la innovación y la región",
+      "respuesta2": "Una universidad orientada exclusivamente a la tecnología",
+      "respuesta3": "Un centro de formación profesional sin investigación",
+      "respuesta4": "Una institución sin presencia comunitaria",
+      "respuestaCorrecta": "Una universidad comprometida con el desarrollo sostenible, la innovación y la región",
+      "decada": "2000"
     }
   ]
 }
