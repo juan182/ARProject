@@ -1,71 +1,91 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 
+[System.Serializable]
+public class ImageAction
+{
+    public string imageName;             // Nombre de la referencia de la imagen
+    public GameObject[] objectsToActivate; // Objetos que se activan cuando la imagen es detectada
+}
+
 public class RAManager : MonoBehaviour
 {
-    [SerializeField] private ARTrackedImageManager arTIM;
+    [Header("AR Components")]
+    public ARTrackedImageManager trackedImageManager;
 
-    // Si usas prefabs, ponlos aquí. Si usas objetos de la escena, también puedes arrastrarlos aquí.
-    [SerializeField] private GameObject[] arModels2Place;
+    [Header("Asistente")]
+    public AssistantController assistant; // Referencia al asistente
 
-    private Dictionary<string, GameObject> arModels = new Dictionary<string, GameObject>();
-    private Dictionary<string, bool> modelState = new Dictionary<string, bool>();
+    [Header("Lista de imágenes y objetos")]
+    public List<ImageAction> imagesToTrack;
 
-    private void Start()
-    {
-        foreach (var arModel in arModels2Place)
-        {
-            // ✅ No instanciamos: usamos los objetos ya existentes
-            arModels.Add(arModel.name, arModel);
-            arModel.SetActive(false);
-            modelState.Add(arModel.name, false);
-        }
-    }
+    private bool assistantActivated = false;
 
     private void OnEnable()
     {
-        arTIM.trackedImagesChanged += ImageFound;
+        if (trackedImageManager != null)
+            trackedImageManager.trackedImagesChanged += OnTrackedImagesChanged;
     }
 
     private void OnDisable()
     {
-        arTIM.trackedImagesChanged -= ImageFound;
+        if (trackedImageManager != null)
+            trackedImageManager.trackedImagesChanged -= OnTrackedImagesChanged;
     }
 
-    private void ImageFound(ARTrackedImagesChangedEventArgs eventData)
+    private void OnTrackedImagesChanged(ARTrackedImagesChangedEventArgs eventArgs)
     {
-        foreach (var trackedImage in eventData.added)
+        foreach (var img in eventArgs.added)
         {
-            ShowARModel(trackedImage);
+            ProcessImage(img);
         }
 
-        foreach (var trackedImage in eventData.updated)
+        foreach (var img in eventArgs.updated)
+        {
+            ProcessImage(img);
+        }
+    }
+
+    private void ProcessImage(ARTrackedImage trackedImage)
+    {
+        string imgName = trackedImage.referenceImage.name;
+
+        // 1️⃣ Verifica si es la imagen del asistente
+        if (!assistantActivated && imgName == "AsistenteImage")
         {
             if (trackedImage.trackingState == TrackingState.Tracking)
             {
-                ShowARModel(trackedImage);
+                assistantActivated = true;
+                assistant.gameObject.SetActive(true);
+
+                // Posición y orientación inicial
+                assistant.transform.position = trackedImage.transform.position;
+                assistant.transform.rotation = trackedImage.transform.rotation;
+
+                Debug.Log("Asistente activado por AR: " + imgName);
             }
-            // Si se pierde el tracking, no ocultamos el modelo
         }
-    }
 
-    private void ShowARModel(ARTrackedImage trackedImage)
-    {
-        string imageName = trackedImage.referenceImage.name;
-        bool isModelActive = modelState[imageName];
-
-        if (!isModelActive)
+        // 2️⃣ Recorre la lista de otras imágenes y objetos
+        foreach (var imageAction in imagesToTrack)
         {
-            GameObject arModel = arModels[imageName];
-            arModel.transform.position = trackedImage.transform.position;
-            arModel.transform.rotation = trackedImage.transform.rotation;
+            if (imgName == imageAction.imageName)
+            {
+                bool isTracking = trackedImage.trackingState == TrackingState.Tracking;
 
-            arModel.SetActive(true);
-            modelState[imageName] = true;
+                foreach (var obj in imageAction.objectsToActivate)
+                {
+                    obj.SetActive(isTracking);
+                    if (isTracking)
+                    {
+                        // Opcional: colocar el objeto en la posición de la imagen
+                        obj.transform.position = trackedImage.transform.position;
+                        obj.transform.rotation = trackedImage.transform.rotation;
+                    }
+                }
+            }
         }
-        // Si ya está activo, no se mueve.
     }
 }
