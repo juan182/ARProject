@@ -16,55 +16,92 @@ public class AssistantController : MonoBehaviour
     public bool finPregunta4 = false;
     public bool finPregunta5 = false;
 
-    [Header("Velocidad de movimiento")]
-    public float speed = 2f;
+    [Header("Velocidad y movimiento")]
+    public float speed = 2f;           // velocidad de desplazamiento
+    public float rotationSpeed = 5f;   // velocidad de rotación
 
     private void Awake()
     {
-        animator = GetComponent<Animator>();
+        // Busca el Animator dentro del FBX hijo
+        animator = GetComponentInChildren<Animator>();
+        if (animator == null) Debug.LogError("Animator no encontrado en ningún hijo.");
+
+        // Busca AudioManager en la escena
         audioManager = FindAnyObjectByType<AudioManager>();
-        messagePanel.SetActive(false);
+        if (audioManager == null) Debug.LogError("AudioManager no encontrado en la escena.");
+
+        // Inicializa panel de mensaje
+        if (messagePanel != null) messagePanel.SetActive(false);
     }
 
     private void Start()
     {
+        Debug.Log("OnAwakeSequence iniciado");
         StartCoroutine(OnAwakeSequence());
     }
 
     private IEnumerator OnAwakeSequence()
     {
-        // 🎬 La animación "Inicio" comienza sola al activar el asistente.
-        // Aquí solo lanzamos el audio asociado.
+        Debug.Log("Reproduciendo audio Inicio");
         audioManager.PlayAssistantAudio("Inicio");
 
-        // Espera hasta que el audio termine.
         yield return new WaitUntil(() => !audioManager.IsPlaying());
 
-        // Empieza el primer recorrido.
+        Debug.Log("Comenzando recorrido 1");
         StartCoroutine(MoverAsistente(1, "Recorrido1"));
     }
 
     private IEnumerator MoverAsistente(int indexDestino, string audioName)
     {
+        if (indexDestino >= puntos.Length)
+        {
+            Debug.LogError("IndexDestino fuera de rango");
+            yield break;
+        }
+
+        Transform target = puntos[indexDestino];
+        if (target == null)
+        {
+            Debug.LogError("Punto destino no asignado: " + indexDestino);
+            yield break;
+        }
+
         animator.SetBool("isWalking", true);
 
-        messagePanel.SetActive(true);
-        StartCoroutine(ParpadeoPanel(messagePanel));
+        if (messagePanel != null)
+        {
+            messagePanel.SetActive(true);
+            StartCoroutine(ParpadeoPanel(messagePanel));
+        }
 
+        Debug.Log("Reproduciendo audio: " + audioName);
         audioManager.PlayAssistantAudio(audioName);
 
-        while (Vector3.Distance(transform.position, puntos[indexDestino].position) > 0.05f)
+        while (Vector3.Distance(transform.position, target.position) > 0.05f)
         {
-            transform.position = Vector3.MoveTowards(transform.position, puntos[indexDestino].position, speed * Time.deltaTime);
+            // Movimiento hacia el destino
+            transform.position = Vector3.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
+
+            // Rotación suave hacia destino
+            Vector3 direction = (target.position - transform.position).normalized;
+            if (direction != Vector3.zero)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(direction);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
+            }
+
             yield return null;
         }
 
         animator.SetBool("isWalking", false);
-        messagePanel.SetActive(false);
 
-        // Espera fin de audio
+        if (messagePanel != null) messagePanel.SetActive(false);
+
         yield return new WaitUntil(() => !audioManager.IsPlaying());
 
+        Debug.Log("Llegó al punto " + indexDestino);
+
+        // Manejo de preguntas y siguientes recorridos
         switch (indexDestino)
         {
             case 1:
