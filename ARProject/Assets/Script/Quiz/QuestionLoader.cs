@@ -43,8 +43,6 @@ public class QuestionLoader : MonoBehaviour
     {
         string path = Path.Combine(Application.streamingAssetsPath, "preguntas.json");
 
-        Debug.Log($"Intentando leer archivo JSON en: {path}");
-
         if (File.Exists(path))
         {
             string json = File.ReadAllText(path);
@@ -52,41 +50,27 @@ public class QuestionLoader : MonoBehaviour
             try
             {
                 questionList = JsonUtility.FromJson<QuestionList>(json);
-                if (questionList != null && questionList.preguntas != null)
-                {
-                    Debug.Log($"✅ Archivo JSON leído correctamente. Total de preguntas: {questionList.preguntas.Count}");
-                    foreach (var p in questionList.preguntas)
-                    {
-                        Debug.Log($"→ {p.pregunta} (Década: {p.decada})");
-                    }
-                }
-                else
-                {
-                    Debug.LogError("⚠ El archivo JSON fue leído, pero está vacío o mal estructurado.");
-                }
             }
-            catch (System.Exception e)
+            catch (System.Exception)
             {
-                Debug.LogError($"❌ Error al convertir el JSON: {e.Message}");
+                questionList = new QuestionList { preguntas = new List<Pregunta>() };
             }
         }
         else
         {
-            Debug.LogError($"❌ No se encontró el archivo preguntas.json en: {path}");
+            questionList = new QuestionList { preguntas = new List<Pregunta>() };
         }
     }
 
     public List<Pregunta> ObtenerPreguntasPorDecada(string decada)
     {
         if (questionList == null || questionList.preguntas == null)
-        {
-            Debug.LogError("❌ No hay preguntas cargadas. Asegúrate de que el JSON se leyó correctamente.");
             return new List<Pregunta>();
-        }
 
-        List<Pregunta> filtradas = questionList.preguntas.FindAll(p => p.decada == decada);
-
-        Debug.Log($"📘 Preguntas encontradas para la década {decada}: {filtradas.Count}");
-        return filtradas;
-    }
+        return questionList.preguntas.FindAll(p => p.decada == decada);
+    }
+    private void OnDisable()
+    {
+        StopAllCoroutines();
+    }
 }

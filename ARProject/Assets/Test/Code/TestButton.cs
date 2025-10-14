@@ -3,6 +3,7 @@
 public class TestButton : MonoBehaviour
 {
     public AssistantController assistant;
+    public QuizTimer quizTimer;
 
     public void OnClick_FinPregunta1()
     {
@@ -53,6 +54,13 @@ public class TestButton : MonoBehaviour
             case 5: assistant.finPregunta5 = true; break;
         }
 
-        Debug.Log($"✅ finPregunta{num} ahora es TRUE");
+        // Detiene o reinicia el timer
+        if (quizTimer != null)
+        {
+            quizTimer.StopTimer();
+            quizTimer.ReiniciarTimer(); // si quieres que aparezca listo para la siguiente pregunta
+        }
+
+        Debug.Log($"✅ finPregunta{num} activado y timer reiniciado");
     }
 }

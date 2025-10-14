@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &5125964590037877882
+--- !u!1 &2553237637712753079
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,41 +8,41 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2515104491164351935}
-  - component: {fileID: 6270883160558369292}
+  - component: {fileID: 4765431239406367928}
+  - component: {fileID: 1587412032212045483}
   m_Layer: 0
-  m_Name: DecadeManager
+  m_Name: QuestionManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2515104491164351935
+--- !u!4 &4765431239406367928
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5125964590037877882}
+  m_GameObject: {fileID: 2553237637712753079}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 527.0923, y: 0, z: 29892.572}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6270883160558369292
+--- !u!114 &1587412032212045483
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5125964590037877882}
+  m_GameObject: {fileID: 2553237637712753079}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8151d9ef8377d314583f74dcafa36572, type: 3}
+  m_Script: {fileID: 11500000, guid: 9bf04d47776a99d46b90ebf0066a7fcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  assistant: {fileID: 0}
-  quizTimer: {fileID: 6139243381392709976, guid: 1be8933fbeb8dbb4dbf1e15ce08f06db, type: 3}
+  questionList:
+    preguntas: []

@@ -10,24 +10,6 @@
       "decada": "1970"
     },
     {
-      "pregunta": "¿En qué año el CUAO se transformó oficialmente en Universidad Autónoma de Occidente (UAO)?",
-      "respuesta1": "1975",
-      "respuesta2": "1974",
-      "respuesta3": "1976",
-      "respuesta4": "1978",
-      "respuestaCorrecta": "1975",
-      "decada": "1970"
-    },
-    {
-      "pregunta": "¿Cuál fue una de las primeras carreras ofrecidas por la UAO?",
-      "respuesta1": "Medicina",
-      "respuesta2": "Derecho",
-      "respuesta3": "Ingeniería Industrial",
-      "respuesta4": "Comunicación Social",
-      "respuestaCorrecta": "Ingeniería Industrial",
-      "decada": "1970"
-    },
-    {
       "pregunta": "¿Quién fue una de las figuras principales en la creación del CUAO?",
       "respuesta1": "Rodrigo Lloreda Caicedo",
       "respuesta2": "Álvaro Pío Valencia",
@@ -55,24 +37,6 @@
       "respuestaCorrecta": "Se creó la Facultad de Ingeniería",
       "decada": "1980"
     },
-    {
-      "pregunta": "¿Qué infraestructura comenzó a consolidarse en los 80?",
-      "respuesta1": "El campus universitario en Valle del Lili",
-      "respuesta2": "El bloque administrativo central",
-      "respuesta3": "La biblioteca digital",
-      "respuesta4": "Los laboratorios de física",
-      "respuestaCorrecta": "El campus universitario en Valle del Lili",
-      "decada": "1980"
-    },
-    {
-      "pregunta": "¿Qué actividad estudiantil fue muy representativa en los años 80?",
-      "respuesta1": "El teatro universitario y la radio",
-      "respuesta2": "El ajedrez y los torneos deportivos",
-      "respuesta3": "La revista científica",
-      "respuesta4": "Las ferias tecnológicas",
-      "respuestaCorrecta": "El teatro universitario y la radio",
-      "decada": "1980"
-    },
 
     {
       "pregunta": "¿Qué programa académico obtuvo reconocimiento nacional durante los 90?",
@@ -90,24 +54,6 @@
       "respuesta3": "La creación del programa de Arquitectura",
       "respuesta4": "El cambio de rector",
       "respuestaCorrecta": "La inauguración del campus en Valle del Lili",
-      "decada": "1990"
-    },
-    {
-      "pregunta": "¿Qué hito tecnológico destacó en la universidad en los 90?",
-      "respuesta1": "Implementación de redes informáticas y laboratorios de cómputo",
-      "respuesta2": "Creación de la emisora UAO Estéreo",
-      "respuesta3": "Inauguración de la biblioteca Mario Carvajal",
-      "respuesta4": "Lanzamiento de la página web institucional",
-      "respuestaCorrecta": "Implementación de redes informáticas y laboratorios de cómputo",
-      "decada": "1990"
-    },
-    {
-      "pregunta": "¿Qué valor institucional se fortaleció durante la década de los 90?",
-      "respuesta1": "Responsabilidad social",
-      "respuesta2": "Innovación tecnológica",
-      "respuesta3": "Internacionalización",
-      "respuesta4": "Investigación aplicada",
-      "respuestaCorrecta": "Responsabilidad social",
       "decada": "1990"
     },
 
@@ -129,23 +75,24 @@
       "respuestaCorrecta": "El Plan Institucional de Participación Ciudadana (PIPC)",
       "decada": "2000"
     },
+
     {
-      "pregunta": "¿Qué papel ha tenido la UAO en el desarrollo ambiental y sostenible reciente?",
-      "respuesta1": "Implementar proyectos de sostenibilidad y campus verde",
-      "respuesta2": "Reducir programas académicos",
-      "respuesta3": "Cerrar laboratorios de investigación",
-      "respuesta4": "Enfocarse solo en la educación virtual",
-      "respuestaCorrecta": "Implementar proyectos de sostenibilidad y campus verde",
-      "decada": "2000"
+      "pregunta": "¿Cuál fue el enfoque principal de la Universidad Autónoma de Occidente durante la década de 2010?",
+      "respuesta1": "La sostenibilidad y la construcción del futuro",
+      "respuesta2": "La expansión internacional",
+      "respuesta3": "La apertura de programas técnicos",
+      "respuesta4": "La digitalización de archivos históricos",
+      "respuestaCorrecta": "La sostenibilidad y la construcción del futuro",
+      "decada": "2010"
     },
     {
-      "pregunta": "¿Qué representa la UAO actualmente según su visión institucional?",
-      "respuesta1": "Una universidad comprometida con el desarrollo sostenible, la innovación y la región",
-      "respuesta2": "Una universidad orientada exclusivamente a la tecnología",
-      "respuesta3": "Un centro de formación profesional sin investigación",
-      "respuesta4": "Una institución sin presencia comunitaria",
-      "respuestaCorrecta": "Una universidad comprometida con el desarrollo sostenible, la innovación y la región",
-      "decada": "2000"
+      "pregunta": "¿Qué compromiso reafirmó la UAO en la década de 2010 según su misión institucional?",
+      "respuesta1": "Ser una universidad de y para la comunidad",
+      "respuesta2": "Centrarse únicamente en la investigación tecnológica",
+      "respuesta3": "Reducir su oferta académica",
+      "respuesta4": "Convertirse en una universidad virtual",
+      "respuestaCorrecta": "Ser una universidad de y para la comunidad",
+      "decada": "2010"
     }
   ]
 }
