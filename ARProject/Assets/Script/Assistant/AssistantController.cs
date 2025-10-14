@@ -17,54 +17,43 @@ public class AssistantController : MonoBehaviour
     public bool finPregunta5 = false;
 
     [Header("Velocidad y movimiento")]
-    public float speed = 2f;           // velocidad de desplazamiento
-    public float rotationSpeed = 5f;   // velocidad de rotación
+    public float speed = 2f;
+    public float rotationSpeed = 5f;
+
+    [Header("Desvíos opcionales")]
+    public Transform[] desvio1; // entre A→B
+    public Transform[] desvio2; // entre B→C
+    public Transform[] desvio3; // entre C→D
+    public Transform[] desvio4; // entre D→final
 
     private void Awake()
     {
-        // Busca el Animator dentro del FBX hijo
         animator = GetComponentInChildren<Animator>();
         if (animator == null) Debug.LogError("Animator no encontrado en ningún hijo.");
 
-        // Busca AudioManager en la escena
         audioManager = FindAnyObjectByType<AudioManager>();
         if (audioManager == null) Debug.LogError("AudioManager no encontrado en la escena.");
 
-        // Inicializa panel de mensaje
         if (messagePanel != null) messagePanel.SetActive(false);
     }
 
     private void Start()
     {
-        Debug.Log("OnAwakeSequence iniciado");
         StartCoroutine(OnAwakeSequence());
     }
 
     private IEnumerator OnAwakeSequence()
     {
-        Debug.Log("Reproduciendo audio Inicio");
         audioManager.PlayAssistantAudio("Inicio");
-
         yield return new WaitUntil(() => !audioManager.IsPlaying());
-
-        Debug.Log("Comenzando recorrido 1");
         StartCoroutine(MoverAsistente(1, "Recorrido1"));
     }
 
     private IEnumerator MoverAsistente(int indexDestino, string audioName)
     {
-        if (indexDestino >= puntos.Length)
-        {
-            Debug.LogError("IndexDestino fuera de rango");
-            yield break;
-        }
-
+        if (indexDestino >= puntos.Length) yield break;
         Transform target = puntos[indexDestino];
-        if (target == null)
-        {
-            Debug.LogError("Punto destino no asignado: " + indexDestino);
-            yield break;
-        }
+        if (target == null) yield break;
 
         animator.SetBool("isWalking", true);
 
@@ -74,24 +63,27 @@ public class AssistantController : MonoBehaviour
             StartCoroutine(ParpadeoPanel(messagePanel));
         }
 
-        Debug.Log("Reproduciendo audio: " + audioName);
         audioManager.PlayAssistantAudio(audioName);
 
-        while (Vector3.Distance(transform.position, target.position) > 0.05f)
+        // Determinar si hay desvíos para este tramo
+        Transform[] desvio = null;
+        switch (indexDestino)
         {
-            // Movimiento hacia el destino
-            transform.position = Vector3.MoveTowards(transform.position, target.position, speed * Time.deltaTime);
-
-            // Rotación suave hacia destino
-            Vector3 direction = (target.position - transform.position).normalized;
-            if (direction != Vector3.zero)
-            {
-                Quaternion targetRotation = Quaternion.LookRotation(direction);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
-            }
-
-            yield return null;
+            case 2: desvio = desvio1; break; // A→B
+            case 3: desvio = desvio2; break; // B→C
+            case 4: desvio = desvio3; break; // C→D
+            case 5: desvio = desvio4; break; // D→final
         }
+
+        // Recorre desvíos si existen
+        if (desvio != null && desvio.Length > 0)
+        {
+            foreach (var p in desvio)
+                yield return StartCoroutine(MoverHacia(p));
+        }
+
+        // Finalmente moverse al destino real
+        yield return StartCoroutine(MoverHacia(target));
 
         animator.SetBool("isWalking", false);
 
@@ -99,9 +91,7 @@ public class AssistantController : MonoBehaviour
 
         yield return new WaitUntil(() => !audioManager.IsPlaying());
 
-        Debug.Log("Llegó al punto " + indexDestino);
-
-        // Manejo de preguntas y siguientes recorridos
+        // Control de preguntas
         switch (indexDestino)
         {
             case 1:
@@ -124,6 +114,23 @@ public class AssistantController : MonoBehaviour
                 yield return new WaitUntil(() => finPregunta5);
                 StartCoroutine(FinalSequence());
                 break;
+        }
+    }
+
+    private IEnumerator MoverHacia(Transform destino)
+    {
+        while (Vector3.Distance(transform.position, destino.position) > 0.05f)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, destino.position, speed * Time.deltaTime);
+
+            Vector3 dir = (destino.position - transform.position).normalized;
+            if (dir != Vector3.zero)
+            {
+                Quaternion rot = Quaternion.LookRotation(dir);
+                transform.rotation = Quaternion.Slerp(transform.rotation, rot, Time.deltaTime * rotationSpeed);
+            }
+
+            yield return null;
         }
     }
 

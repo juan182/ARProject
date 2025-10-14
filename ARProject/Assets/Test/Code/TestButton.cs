@@ -2,26 +2,57 @@
 
 public class TestButton : MonoBehaviour
 {
-    // Arrastra aquí el objeto del asistente desde la jerarquía
     public AssistantController assistant;
 
-    // Este método se llamará desde el botón
     public void OnClick_FinPregunta1()
     {
-        if (assistant != null)
-        {
-            // Detiene el audio actual
-            if (assistant.audioManager != null)
-            {
-                assistant.audioManager.StopAssistantAudio();
-            }
+        ActivarPregunta(1);
+    }
 
-            assistant.finPregunta1 = true;
-            Debug.Log("✅ finPregunta1 ahora es TRUE");
-        }
-        else
+    public void OnClick_FinPregunta2()
+    {
+        ActivarPregunta(2);
+    }
+
+    public void OnClick_FinPregunta3()
+    {
+        ActivarPregunta(3);
+    }
+
+    public void OnClick_FinPregunta4()
+    {
+        ActivarPregunta(4);
+    }
+
+    public void OnClick_FinPregunta5()
+    {
+        ActivarPregunta(5);
+    }
+
+    private void ActivarPregunta(int num)
+    {
+        if (assistant == null)
         {
             Debug.LogWarning("⚠️ No se asignó el asistente en el UIController.");
+            return;
         }
+
+        // Detener audio actual si hay AudioManager
+        if (assistant.audioManager != null)
+        {
+            assistant.audioManager.StopAssistantAudio();
+        }
+
+        // Activar el bool correspondiente
+        switch (num)
+        {
+            case 1: assistant.finPregunta1 = true; break;
+            case 2: assistant.finPregunta2 = true; break;
+            case 3: assistant.finPregunta3 = true; break;
+            case 4: assistant.finPregunta4 = true; break;
+            case 5: assistant.finPregunta5 = true; break;
+        }
+
+        Debug.Log($"✅ finPregunta{num} ahora es TRUE");
     }
 }

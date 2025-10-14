@@ -60,8 +60,12 @@ MonoBehaviour:
   finPregunta3: 0
   finPregunta4: 0
   finPregunta5: 0
-  speed: 2
+  speed: 1.5
   rotationSpeed: 5
+  desvio1: []
+  desvio2: []
+  desvio3: []
+  desvio4: []
 --- !u!82 &962210338247032515
 AudioSource:
   m_ObjectHideFlags: 0
