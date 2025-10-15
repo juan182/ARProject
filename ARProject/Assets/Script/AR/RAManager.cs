@@ -6,8 +6,9 @@ using UnityEngine.XR.ARSubsystems;
 [System.Serializable]
 public class ImageAction
 {
-    public string imageName;             // Nombre de la referencia de la imagen
-    public GameObject[] objectsToActivate; // Objetos que se activan cuando la imagen es detectada
+    public string imageName;              // Nombre de la referencia de imagen en la librería
+    public GameObject[] objectsToActivate; // Objetos 3D que se activan
+    public Canvas[] quizCanvases;          // Canvas de preguntas que se activan
 }
 
 public class RAManager : MonoBehaviour
@@ -16,9 +17,9 @@ public class RAManager : MonoBehaviour
     public ARTrackedImageManager trackedImageManager;
 
     [Header("Asistente")]
-    public AssistantController assistant; // Referencia al asistente
+    public AssistantController assistant;
 
-    [Header("Lista de imágenes y objetos")]
+    [Header("Lista de imágenes y acciones")]
     public List<ImageAction> imagesToTrack;
 
     private bool assistantActivated = false;
@@ -38,53 +39,51 @@ public class RAManager : MonoBehaviour
     private void OnTrackedImagesChanged(ARTrackedImagesChangedEventArgs eventArgs)
     {
         foreach (var img in eventArgs.added)
-        {
             ProcessImage(img);
-        }
 
         foreach (var img in eventArgs.updated)
-        {
             ProcessImage(img);
-        }
     }
 
     private void ProcessImage(ARTrackedImage trackedImage)
     {
         string imgName = trackedImage.referenceImage.name;
+        bool isTracking = trackedImage.trackingState == TrackingState.Tracking;
 
-        // 1️⃣ Verifica si es la imagen del asistente
-        if (!assistantActivated && imgName == "AsistenteImage")
+        // 1️⃣ Activar el asistente con la primera imagen
+        if (!assistantActivated && imgName == "AsistenteImage" && isTracking)
         {
-            if (trackedImage.trackingState == TrackingState.Tracking)
-            {
-                assistantActivated = true;
-                assistant.gameObject.SetActive(true);
+            assistantActivated = true;
+            assistant.gameObject.SetActive(true);
 
-                // Posición y orientación inicial
-                assistant.transform.position = trackedImage.transform.position;
-                assistant.transform.rotation = trackedImage.transform.rotation;
+            // Colocar el asistente a 1 metro frente al muro y 5 cm más arriba
+            Vector3 offset = trackedImage.transform.forward * 1.0f + Vector3.up * 0.05f;
+            assistant.transform.position = trackedImage.transform.position + offset;
+            assistant.transform.rotation = trackedImage.transform.rotation;
 
-                Debug.Log("Asistente activado por AR: " + imgName);
-            }
+            Debug.Log("🤖 Asistente activado a 1 m frente al muro, orientado hacia afuera");
         }
 
-        // 2️⃣ Recorre la lista de otras imágenes y objetos
-        foreach (var imageAction in imagesToTrack)
+        // 2️⃣ Procesar las demás imágenes (incluyendo los quizzes)
+        foreach (var action in imagesToTrack)
         {
-            if (imgName == imageAction.imageName)
+            if (imgName == action.imageName)
             {
-                bool isTracking = trackedImage.trackingState == TrackingState.Tracking;
-
-                foreach (var obj in imageAction.objectsToActivate)
+                // --- Objetos 3D ---
+                if (action.objectsToActivate != null)
                 {
-                    obj.SetActive(isTracking);
-                    if (isTracking)
-                    {
-                        // Opcional: colocar el objeto en la posición de la imagen
-                        obj.transform.position = trackedImage.transform.position;
-                        obj.transform.rotation = trackedImage.transform.rotation;
-                    }
+                    foreach (var obj in action.objectsToActivate)
+                        if (obj != null) obj.SetActive(isTracking);
                 }
+
+                // --- Canvas de preguntas ---
+                if (action.quizCanvases != null)
+                {
+                    foreach (var canvas in action.quizCanvases)
+                        if (canvas != null) canvas.enabled = isTracking;
+                }
+
+                Debug.Log($"📸 Imagen '{imgName}' | Tracking: {isTracking}");
             }
         }
     }
