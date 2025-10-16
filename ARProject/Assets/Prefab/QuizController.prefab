@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6725210201469644038}
   - component: {fileID: 8199037711008125148}
   m_Layer: 0
-  m_Name: Controller
+  m_Name: QuizController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

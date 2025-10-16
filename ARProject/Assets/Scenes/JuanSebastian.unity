@@ -1341,7 +1341,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8177789291138083247, guid: ec603c3325d28b140a39ffd8f6d0a530, type: 3}
       propertyPath: m_Name
-      value: Controller
+      value: QuizController
       objectReference: {fileID: 0}
     - target: {fileID: 8199037711008125148, guid: ec603c3325d28b140a39ffd8f6d0a530, type: 3}
       propertyPath: 'panelesPreguntas.Array.data[0]'
