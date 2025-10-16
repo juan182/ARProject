@@ -50,21 +50,22 @@ public class RAManager : MonoBehaviour
         string imgName = trackedImage.referenceImage.name;
         bool isTracking = trackedImage.trackingState == TrackingState.Tracking;
 
-        // 1️⃣ Activar el asistente con la primera imagen
+        // 🟢 Activar el asistente con la primera imagen
         if (!assistantActivated && imgName == "AsistenteImage" && isTracking)
         {
             assistantActivated = true;
             assistant.gameObject.SetActive(true);
 
-            // Colocar el asistente a 1 metro frente al muro y 5 cm más arriba
-            Vector3 offset = trackedImage.transform.forward * 1.0f + Vector3.up * 0.05f;
+            // 📏 Colocar el asistente a 0.54 metros frente al muro y 5 cm más arriba
+            Vector3 offset = trackedImage.transform.forward * 0.54f + Vector3.up * 0.05f;
             assistant.transform.position = trackedImage.transform.position + offset;
             assistant.transform.rotation = trackedImage.transform.rotation;
 
-            Debug.Log("🤖 Asistente activado a 1 m frente al muro, orientado hacia afuera");
+            // ▶ Iniciar su presentación manualmente
+            assistant.IniciarPresentacion();
         }
 
-        // 2️⃣ Procesar las demás imágenes (incluyendo los quizzes)
+        // 🧩 Procesar las demás imágenes (por ejemplo los quizzes)
         foreach (var action in imagesToTrack)
         {
             if (imgName == action.imageName)
@@ -82,8 +83,6 @@ public class RAManager : MonoBehaviour
                     foreach (var canvas in action.quizCanvases)
                         if (canvas != null) canvas.enabled = isTracking;
                 }
-
-                Debug.Log($"📸 Imagen '{imgName}' | Tracking: {isTracking}");
             }
         }
     }

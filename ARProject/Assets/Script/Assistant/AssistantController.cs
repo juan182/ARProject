@@ -26,6 +26,8 @@ public class AssistantController : MonoBehaviour
     public Transform[] desvio3; // entre C→D
     public Transform[] desvio4; // entre D→final
 
+    private bool iniciado = false;
+
     private void Awake()
     {
         animator = GetComponentInChildren<Animator>();
@@ -37,13 +39,32 @@ public class AssistantController : MonoBehaviour
         if (messagePanel != null) messagePanel.SetActive(false);
     }
 
-    private void Start()
+    // 🔹 Ya no inicia automáticamente aquí
+    private void Start() { }
+
+    // 🔹 Nuevo método para iniciar manualmente desde ARManager
+    public void IniciarPresentacion()
     {
+        if (iniciado) return; // Evita reiniciar dos veces
+        iniciado = true;
         StartCoroutine(OnAwakeSequence());
     }
 
     private IEnumerator OnAwakeSequence()
     {
+        // Espera leve para asegurar que todo esté cargado
+        yield return new WaitForSeconds(0.3f);
+
+        if (audioManager == null)
+        {
+            audioManager = FindAnyObjectByType<AudioManager>();
+            if (audioManager == null)
+            {
+                Debug.LogError("❌ AudioManager aún no disponible.");
+                yield break;
+            }
+        }
+
         audioManager.PlayAssistantAudio("Inicio");
         yield return new WaitUntil(() => !audioManager.IsPlaying());
         StartCoroutine(MoverAsistente(1, "Recorrido1"));
@@ -69,10 +90,10 @@ public class AssistantController : MonoBehaviour
         Transform[] desvio = null;
         switch (indexDestino)
         {
-            case 2: desvio = desvio1; break; // A→B
-            case 3: desvio = desvio2; break; // B→C
-            case 4: desvio = desvio3; break; // C→D
-            case 5: desvio = desvio4; break; // D→final
+            case 2: desvio = desvio1; break;
+            case 3: desvio = desvio2; break;
+            case 4: desvio = desvio3; break;
+            case 5: desvio = desvio4; break;
         }
 
         // Recorre desvíos si existen
@@ -82,7 +103,6 @@ public class AssistantController : MonoBehaviour
                 yield return StartCoroutine(MoverHacia(p));
         }
 
-        // Finalmente moverse al destino real
         yield return StartCoroutine(MoverHacia(target));
 
         animator.SetBool("isWalking", false);
