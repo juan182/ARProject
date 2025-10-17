@@ -14,10 +14,10 @@ public class AssistantController : MonoBehaviour
     public float rotationSpeed = 5f;
 
     [Header("Desvíos opcionales")]
-    public Transform[] desvio1; // entre A→B
-    public Transform[] desvio2; // entre B→C
-    public Transform[] desvio3; // entre C→D
-    public Transform[] desvio4; // entre D→final
+    public Transform[] desvio1;
+    public Transform[] desvio2;
+    public Transform[] desvio3;
+    public Transform[] desvio4;
 
     private bool iniciado = false;
 
@@ -33,12 +33,6 @@ public class AssistantController : MonoBehaviour
         Debug.Log($"🧩 AssistantController activo en objeto: {gameObject.name} (ID {GetInstanceID()})");
     }
 
-    private void Start()
-    {
-        Debug.Log($"🧩 AssistantController iniciado en objeto: {gameObject.name} (ID {GetInstanceID()})");
-    }
-
-    // 🔹 Método para iniciar desde ARManager
     public void IniciarPresentacion()
     {
         if (iniciado) return;
@@ -48,7 +42,7 @@ public class AssistantController : MonoBehaviour
 
     private IEnumerator OnAwakeSequence()
     {
-        yield return new WaitForSeconds(0.3f); // breve espera de carga
+        yield return new WaitForSeconds(0.3f);
 
         if (audioManager == null)
         {
@@ -60,16 +54,9 @@ public class AssistantController : MonoBehaviour
             }
         }
 
-        audioManager.PlayAssistantAudio("Inicio");
-        yield return new WaitUntil(() => !audioManager.IsPlaying());
+        yield return PlayAudioConEspera("Inicio");
 
-        // Comienza la secuencia completa automáticamente
-        yield return StartCoroutine(MoverAsistente(1, "Recorrido1"));
-        yield return StartCoroutine(MoverAsistente(2, "Recorrido2"));
-        yield return StartCoroutine(MoverAsistente(3, "Recorrido3"));
-        yield return StartCoroutine(MoverAsistente(4, "Recorrido4"));
-        yield return StartCoroutine(MoverAsistente(5, "Recorrido5"));
-        yield return StartCoroutine(FinalSequence());
+        StartCoroutine(MoverAsistente(1, "Recorrido1"));
     }
 
     private IEnumerator MoverAsistente(int indexDestino, string audioName)
@@ -86,9 +73,8 @@ public class AssistantController : MonoBehaviour
             StartCoroutine(ParpadeoPanel(messagePanel));
         }
 
-        audioManager.PlayAssistantAudio(audioName);
+        yield return PlayAudioConEspera(audioName);
 
-        // Desvíos
         Transform[] desvio = null;
         switch (indexDestino)
         {
@@ -108,10 +94,17 @@ public class AssistantController : MonoBehaviour
 
         animator.SetBool("isWalking", false);
 
-        if (messagePanel != null)
-            messagePanel.SetActive(false);
+        if (messagePanel != null) messagePanel.SetActive(false);
 
-        yield return new WaitUntil(() => !audioManager.IsPlaying());
+        // 🔹 Avanzar inmediatamente al siguiente
+        switch (indexDestino)
+        {
+            case 1: StartCoroutine(MoverAsistente(2, "Recorrido2")); break;
+            case 2: StartCoroutine(MoverAsistente(3, "Recorrido3")); break;
+            case 3: StartCoroutine(MoverAsistente(4, "Recorrido4")); break;
+            case 4: StartCoroutine(MoverAsistente(5, "Recorrido5")); break;
+            case 5: StartCoroutine(FinalSequence()); break;
+        }
     }
 
     private IEnumerator MoverHacia(Transform destino)
@@ -134,9 +127,7 @@ public class AssistantController : MonoBehaviour
     private IEnumerator FinalSequence()
     {
         animator.SetBool("isFinal", true);
-        audioManager.PlayAssistantAudio("Fin");
-
-        yield return new WaitUntil(() => !audioManager.IsPlaying());
+        yield return PlayAudioConEspera("Fin");
         Debug.Log("Asistente completó todas las fases.");
     }
 
@@ -150,5 +141,18 @@ public class AssistantController : MonoBehaviour
             cg.alpha = (cg.alpha == 1) ? 0 : 1;
             yield return new WaitForSeconds(0.5f);
         }
+    }
+
+    // 🔹 Nueva función para reproducir audio con espera basada en la duración del clip
+    private IEnumerator PlayAudioConEspera(string audioName)
+    {
+        if (audioManager == null) yield break;
+
+        audioManager.PlayAssistantAudio(audioName);
+
+        float duracion = audioManager.GetClipLength(audioName);
+        if (duracion <= 0f) duracion = 1f; // fallback mínimo
+
+        yield return new WaitForSeconds(duracion);
     }
 }

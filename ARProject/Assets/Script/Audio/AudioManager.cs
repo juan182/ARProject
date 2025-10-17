@@ -47,4 +47,15 @@ public class AudioManager : MonoBehaviour
 
 
     public bool IsPlaying() => audioSource.isPlaying;
+
+    // Devuelve la duración del clip del audio por nombre
+    public float GetClipLength(string name)
+    {
+        AssistantAudio a = assistantAudios.Find(x => x.name == name);
+        if (a != null && a.clip != null)
+            return a.clip.length;
+        else
+            return 0f; // fallback
+    }
+
 }
