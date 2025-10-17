@@ -57,7 +57,7 @@ public class RAManager : MonoBehaviour
             assistant.gameObject.SetActive(true);
 
             // 📏 Colocar el asistente a 0.54 metros frente al muro y 5 cm más arriba
-            Vector3 offset = trackedImage.transform.forward * 0.54f + Vector3.up * 0.05f;
+            Vector3 offset = trackedImage.transform.forward * 0.5f + Vector3.up * 0.05f;
             assistant.transform.position = trackedImage.transform.position + offset;
             assistant.transform.rotation = trackedImage.transform.rotation;
 

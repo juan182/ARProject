@@ -9,33 +9,56 @@ public class QuizController : MonoBehaviour
 
     private void Start()
     {
-        // Asegura que solo el primer panel esté activo al inicio
-        for (int i = 0; i < panelesPreguntas.Length; i++)
+        if (panelesPreguntas == null || panelesPreguntas.Length == 0)
         {
-            panelesPreguntas[i].SetActive(i == 0);
+            if (DebugUI.Instance != null)
+                DebugUI.Instance.Log("❌ No hay paneles de preguntas asignados en QuizController.");
+            return;
         }
+
+        for (int i = 0; i < panelesPreguntas.Length; i++)
+            panelesPreguntas[i].SetActive(i == 0);
+
+        if (DebugUI.Instance != null)
+            DebugUI.Instance.Log($"🧠 Iniciando QuizController. Pregunta inicial: {actual + 1}/{panelesPreguntas.Length}");
     }
 
     public void SiguientePregunta()
     {
-        if (panelesPreguntas.Length == 0) return;
+        if (panelesPreguntas.Length == 0)
+        {
+            if (DebugUI.Instance != null)
+                DebugUI.Instance.Log("⚠️ No hay paneles de preguntas en el array.");
+            return;
+        }
 
-        // Desactiva el panel actual
+        if (DebugUI.Instance != null)
+            DebugUI.Instance.Log($"➡️ Botón 'Siguiente' presionado. Actual: {actual + 1}/{panelesPreguntas.Length}");
+
         if (actual < panelesPreguntas.Length)
         {
             panelesPreguntas[actual].SetActive(false);
+            if (DebugUI.Instance != null)
+                DebugUI.Instance.Log($"🚫 Ocultando pregunta {actual + 1}");
+
             actual++;
 
-            // Si hay más preguntas, activa la siguiente
             if (actual < panelesPreguntas.Length)
             {
                 panelesPreguntas[actual].SetActive(true);
-                Debug.Log($"➡️ Mostrando pregunta {actual + 1}");
+                if (DebugUI.Instance != null)
+                    DebugUI.Instance.Log($"✅ Mostrando pregunta {actual + 1}");
             }
             else
             {
-                Debug.Log("✅ Quiz terminado.");
+                if (DebugUI.Instance != null)
+                    DebugUI.Instance.Log("🏁 Quiz terminado. No hay más preguntas.");
             }
+        }
+        else
+        {
+            if (DebugUI.Instance != null)
+                DebugUI.Instance.Log("⚠️ Ya estás en la última pregunta. No se puede avanzar.");
         }
     }
 }

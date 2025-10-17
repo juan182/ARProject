@@ -9,7 +9,7 @@ public class QuizTimer : MonoBehaviour
     public int duracionSegundos = 40;
 
     [Header("Paneles")]
-    public GameObject panelTiempoAgotado; // Panel opcional que se activa cuando se acaba el tiempo
+    public GameObject panelTiempoAgotado;
 
     private Coroutine coTiempo;
     private float tiempoRestante;
@@ -52,7 +52,6 @@ public class QuizTimer : MonoBehaviour
         while (corriendo && tiempoRestante > 0f)
         {
             tiempoRestante -= Time.deltaTime;
-            if (tiempoRestante < 0f) tiempoRestante = 0f;
             ActualizarTiempoUI(tiempoRestante);
             yield return null;
         }
@@ -60,15 +59,12 @@ public class QuizTimer : MonoBehaviour
         if (corriendo && tiempoRestante <= 0f)
         {
             StopTimer();
+            panelTiempoAgotado?.SetActive(true);
 
-            if (panelTiempoAgotado != null)
-                panelTiempoAgotado.SetActive(true);
-
-            // Buscar QuestionManager en el mismo panel y avanzar
             QuestionManager qm = GetComponentInParent<QuestionManager>();
             if (qm != null)
             {
-                qm.Invoke("AvanzarPregunta", 2f);
+                qm.Invoke("SiguientePreguntaConRetraso", 2f);
             }
         }
     }

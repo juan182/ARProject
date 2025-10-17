@@ -1,6 +1,8 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Networking;
+using System.Collections;
 
 [System.Serializable]
 public class Pregunta
@@ -22,8 +24,9 @@ public class QuestionList
 
 public class QuestionLoader : MonoBehaviour
 {
-    public static QuestionLoader Instance;
+    public static QuestionLoader Instance { get; private set; }
     public QuestionList questionList;
+    public bool PreguntasCargadas { get; private set; } = false;
 
     private void Awake()
     {
@@ -31,7 +34,8 @@ public class QuestionLoader : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            CargarPreguntas();
+            // lanzar la carga como coroutine (compatible con Android)
+            StartCoroutine(CargarPreguntasCoroutine());
         }
         else
         {
@@ -39,26 +43,68 @@ public class QuestionLoader : MonoBehaviour
         }
     }
 
-    private void CargarPreguntas()
+    private IEnumerator CargarPreguntasCoroutine()
     {
         string path = Path.Combine(Application.streamingAssetsPath, "preguntas.json");
+        string json = null;
 
-        if (File.Exists(path))
+        // En Android el path es "jar:file://..." y File.ReadAllText no funciona.
+        if (path.Contains("://") || path.Contains(":///"))
         {
-            string json = File.ReadAllText(path);
+            using (UnityWebRequest uwr = UnityWebRequest.Get(path))
+            {
+                yield return uwr.SendWebRequest();
 
+#if UNITY_2020_1_OR_NEWER
+                if (uwr.result != UnityWebRequest.Result.Success)
+#else
+                if (uwr.isNetworkError || uwr.isHttpError)
+#endif
+                {
+                    Debug.LogError($"❌ Error leyendo JSON desde StreamingAssets (UnityWebRequest): {uwr.error}  path={path}");
+                    questionList = new QuestionList { preguntas = new List<Pregunta>() };
+                }
+                else
+                {
+                    json = uwr.downloadHandler.text;
+                }
+            }
+        }
+        else
+        {
+            // Editor / Standalone: se puede leer con File
+            try
+            {
+                json = File.ReadAllText(path);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"❌ Error leyendo JSON con File.ReadAllText: {e.Message} path={path}");
+            }
+            yield return null;
+        }
+
+        if (!string.IsNullOrEmpty(json))
+        {
             try
             {
                 questionList = JsonUtility.FromJson<QuestionList>(json);
+                if (questionList == null || questionList.preguntas == null)
+                    questionList = new QuestionList { preguntas = new List<Pregunta>() };
+
+                PreguntasCargadas = true;
+                Debug.Log($"✅ Se cargaron {questionList.preguntas.Count} preguntas desde JSON");
             }
-            catch (System.Exception)
+            catch (System.Exception e)
             {
+                Debug.LogError($"❌ Error parseando JSON: {e.Message}");
                 questionList = new QuestionList { preguntas = new List<Pregunta>() };
             }
         }
         else
         {
-            questionList = new QuestionList { preguntas = new List<Pregunta>() };
+            if (questionList == null)
+                questionList = new QuestionList { preguntas = new List<Pregunta>() };
         }
     }
 
@@ -68,9 +114,5 @@ public class QuestionLoader : MonoBehaviour
             return new List<Pregunta>();
 
         return questionList.preguntas.FindAll(p => p.decada == decada);
-    }
-    private void OnDisable()
-    {
-        StopAllCoroutines();
     }
 }

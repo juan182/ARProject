@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4765431239406367928}
   - component: {fileID: 1587412032212045483}
   m_Layer: 0
-  m_Name: QuestionManager
+  m_Name: QuestionLoader
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -9,13 +9,6 @@ public class AssistantController : MonoBehaviour
     public Transform[] puntos; // [0]=inicio, [1]=A, [2]=B, [3]=C, [4]=D
     public GameObject messagePanel;
 
-    [Header("Control de preguntas")]
-    public bool finPregunta1 = false;
-    public bool finPregunta2 = false;
-    public bool finPregunta3 = false;
-    public bool finPregunta4 = false;
-    public bool finPregunta5 = false;
-
     [Header("Velocidad y movimiento")]
     public float speed = 2f;
     public float rotationSpeed = 5f;
@@ -37,23 +30,25 @@ public class AssistantController : MonoBehaviour
         if (audioManager == null) Debug.LogError("AudioManager no encontrado en la escena.");
 
         if (messagePanel != null) messagePanel.SetActive(false);
+        Debug.Log($"🧩 AssistantController activo en objeto: {gameObject.name} (ID {GetInstanceID()})");
     }
 
-    // 🔹 Ya no inicia automáticamente aquí
-    private void Start() { }
+    private void Start()
+    {
+        Debug.Log($"🧩 AssistantController iniciado en objeto: {gameObject.name} (ID {GetInstanceID()})");
+    }
 
-    // 🔹 Nuevo método para iniciar manualmente desde ARManager
+    // 🔹 Método para iniciar desde ARManager
     public void IniciarPresentacion()
     {
-        if (iniciado) return; // Evita reiniciar dos veces
+        if (iniciado) return;
         iniciado = true;
         StartCoroutine(OnAwakeSequence());
     }
 
     private IEnumerator OnAwakeSequence()
     {
-        // Espera leve para asegurar que todo esté cargado
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(0.3f); // breve espera de carga
 
         if (audioManager == null)
         {
@@ -67,7 +62,14 @@ public class AssistantController : MonoBehaviour
 
         audioManager.PlayAssistantAudio("Inicio");
         yield return new WaitUntil(() => !audioManager.IsPlaying());
-        StartCoroutine(MoverAsistente(1, "Recorrido1"));
+
+        // Comienza la secuencia completa automáticamente
+        yield return StartCoroutine(MoverAsistente(1, "Recorrido1"));
+        yield return StartCoroutine(MoverAsistente(2, "Recorrido2"));
+        yield return StartCoroutine(MoverAsistente(3, "Recorrido3"));
+        yield return StartCoroutine(MoverAsistente(4, "Recorrido4"));
+        yield return StartCoroutine(MoverAsistente(5, "Recorrido5"));
+        yield return StartCoroutine(FinalSequence());
     }
 
     private IEnumerator MoverAsistente(int indexDestino, string audioName)
@@ -86,7 +88,7 @@ public class AssistantController : MonoBehaviour
 
         audioManager.PlayAssistantAudio(audioName);
 
-        // Determinar si hay desvíos para este tramo
+        // Desvíos
         Transform[] desvio = null;
         switch (indexDestino)
         {
@@ -96,7 +98,6 @@ public class AssistantController : MonoBehaviour
             case 5: desvio = desvio4; break;
         }
 
-        // Recorre desvíos si existen
         if (desvio != null && desvio.Length > 0)
         {
             foreach (var p in desvio)
@@ -107,34 +108,10 @@ public class AssistantController : MonoBehaviour
 
         animator.SetBool("isWalking", false);
 
-        if (messagePanel != null) messagePanel.SetActive(false);
+        if (messagePanel != null)
+            messagePanel.SetActive(false);
 
         yield return new WaitUntil(() => !audioManager.IsPlaying());
-
-        // Control de preguntas
-        switch (indexDestino)
-        {
-            case 1:
-                yield return new WaitUntil(() => finPregunta1);
-                StartCoroutine(MoverAsistente(2, "Recorrido2"));
-                break;
-            case 2:
-                yield return new WaitUntil(() => finPregunta2);
-                StartCoroutine(MoverAsistente(3, "Recorrido3"));
-                break;
-            case 3:
-                yield return new WaitUntil(() => finPregunta3);
-                StartCoroutine(MoverAsistente(4, "Recorrido4"));
-                break;
-            case 4:
-                yield return new WaitUntil(() => finPregunta4);
-                StartCoroutine(MoverAsistente(5, "Recorrido5"));
-                break;
-            case 5:
-                yield return new WaitUntil(() => finPregunta5);
-                StartCoroutine(FinalSequence());
-                break;
-        }
     }
 
     private IEnumerator MoverHacia(Transform destino)

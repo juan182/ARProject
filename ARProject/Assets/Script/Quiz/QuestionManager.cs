@@ -1,130 +1,160 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
 public class QuestionManager : MonoBehaviour
 {
-    [Header("Configuración de preguntas")]
-    public string decadaSeleccionada; // Permite cambiar la década desde el Inspector
-    private List<Pregunta> preguntasFiltradas;
-    private Pregunta preguntaActual;
-
-    [Header("Referencias")]
-    public QuizController quizController; // Controlador principal del quiz
-    public QuizTimer timer; // Referencia al timer
-
-    [Header("UI")]
+    [Header("Referencias del UI")]
     public TextMeshProUGUI textoPregunta;
-    public Button[] botonesRespuestas; // Deben ser 4 botones
+    public Button[] botonesRespuestas;
+
+    [Header("Paneles de estado")]
     public GameObject panelCorrecto;
     public GameObject panelIncorrecto;
+    public GameObject panelFinal;
+
+    [Header("Controladores externos")] 
+    public GameObject quizGameObject;       // El objeto "Quiz" (para AR, no se apagará automáticamente)
+
+    private List<Pregunta> todasLasPreguntas;
+    private List<string> decadasOrdenadas;
+    private int indiceDecadaActual = 0;
+    private int indicePreguntaActual = 0;
+    private Pregunta preguntaActual;
+    private string respuestaCorrectaActual;
 
     private void Start()
     {
-        CargarPreguntasPorDecada();
-        MostrarPreguntaAleatoria();
+        StartCoroutine(EsperarPreguntasCargadas());
     }
 
-    public void CargarPreguntasPorDecada()
+    private System.Collections.IEnumerator EsperarPreguntasCargadas()
     {
-        preguntasFiltradas = QuestionLoader.Instance.ObtenerPreguntasPorDecada(decadaSeleccionada);
-        if (preguntasFiltradas == null || preguntasFiltradas.Count == 0)
+        while (!QuestionLoader.Instance.PreguntasCargadas)
+            yield return null;
+
+        todasLasPreguntas = QuestionLoader.Instance.questionList.preguntas;
+
+        if (todasLasPreguntas == null || todasLasPreguntas.Count == 0)
         {
-            Debug.LogWarning($"⚠️ No hay preguntas para la década {decadaSeleccionada}");
+            Debug.LogError("❌ No hay preguntas cargadas en el JSON.");
+            if (DebugUI.Instance != null)
+                DebugUI.Instance.Log("❌ No hay preguntas cargadas en el JSON.");
+            yield break;
         }
+
+        decadasOrdenadas = todasLasPreguntas
+            .Select(p => p.decada)
+            .Distinct()
+            .OrderBy(d => d)
+            .ToList();
+
+        MostrarPreguntaActual();
     }
 
-    public void MostrarPreguntaAleatoria()
+    private void MostrarPreguntaActual()
     {
-        if (preguntasFiltradas == null || preguntasFiltradas.Count == 0) return;
+        if (indiceDecadaActual >= decadasOrdenadas.Count)
+        {
+            MostrarPanelFinal();
+            return;
+        }
 
-        // Selecciona una pregunta aleatoria
-        preguntaActual = preguntasFiltradas[Random.Range(0, preguntasFiltradas.Count)];
+        string decada = decadasOrdenadas[indiceDecadaActual];
+        List<Pregunta> preguntasDeDecada = QuestionLoader.Instance.ObtenerPreguntasPorDecada(decada);
+
+        if (preguntasDeDecada.Count == 0)
+        {
+            Debug.LogWarning($"⚠️ No hay preguntas en la década {decada}");
+            if (DebugUI.Instance != null)
+                DebugUI.Instance.Log($"⚠️ No hay preguntas en la década {decada}");
+            indiceDecadaActual++;
+            indicePreguntaActual = 0;
+            MostrarPreguntaActual();
+            return;
+        }
+
+        // Selecciona la pregunta según indicePreguntaActual
+        preguntaActual = preguntasDeDecada[indicePreguntaActual];
+        respuestaCorrectaActual = preguntaActual.respuestaCorrecta;
+
+        // Mostrar en UI
         textoPregunta.text = preguntaActual.pregunta;
 
-        // Mezcla las respuestas
-        List<string> respuestas = new List<string>
-        {
+        List<string> respuestas = new List<string> {
             preguntaActual.respuesta1,
             preguntaActual.respuesta2,
             preguntaActual.respuesta3,
             preguntaActual.respuesta4
-        };
-        Shuffle(respuestas);
+        }.OrderBy(x => Random.value).ToList();
 
-        // Asigna el texto a los botones y los listeners
         for (int i = 0; i < botonesRespuestas.Length; i++)
         {
+            int index = i;
             botonesRespuestas[i].GetComponentInChildren<TextMeshProUGUI>().text = respuestas[i];
             botonesRespuestas[i].onClick.RemoveAllListeners();
-
-            string respuestaBoton = respuestas[i]; // necesario para cierre
-            botonesRespuestas[i].onClick.AddListener(() => VerificarRespuesta(respuestaBoton));
+            botonesRespuestas[i].onClick.AddListener(() => Responder(respuestas[index]));
+            botonesRespuestas[i].interactable = true;
         }
 
-        // Reiniciar el timer
-        if (timer != null)
-        {
-            timer.ReiniciarTimer();
-        }
+        if (DebugUI.Instance != null)
+            DebugUI.Instance.Log($"🧠 Mostrando pregunta de la década {decada}: {preguntaActual.pregunta}");
+    }
 
-        // Ocultar paneles de feedback
+    public void Responder(string respuestaSeleccionada)
+    {
+        bool esCorrecta = respuestaSeleccionada == respuestaCorrectaActual;
+
+        panelCorrecto.SetActive(esCorrecta);
+        panelIncorrecto.SetActive(!esCorrecta);
+
+        foreach (var btn in botonesRespuestas)
+            btn.interactable = false;
+
+        if (DebugUI.Instance != null)
+            DebugUI.Instance.Log(esCorrecta ? "✅ Respuesta correcta" : "❌ Respuesta incorrecta");
+    }
+
+    // 🔹 Botón “Siguiente” para mostrar la próxima pregunta
+    public void OnClick_Siguiente()
+    {
+        if (DebugUI.Instance != null)
+            DebugUI.Instance.Log("🟢 Botón Siguiente presionado");
+
+        // Apaga paneles de feedback
         panelCorrecto.SetActive(false);
         panelIncorrecto.SetActive(false);
-    }
 
-    private void VerificarRespuesta(string respuestaSeleccionada)
-    {
-        // Detener el timer al responder
-        if (timer != null)
-            timer.StopTimer();
+        // Avanzar al siguiente índice de pregunta
+        indicePreguntaActual++;
 
-        bool correcta = respuestaSeleccionada == preguntaActual.respuestaCorrecta;
+        string decada = decadasOrdenadas[indiceDecadaActual];
+        List<Pregunta> preguntasDeDecada = QuestionLoader.Instance.ObtenerPreguntasPorDecada(decada);
 
-        if (correcta)
+        if (indicePreguntaActual < preguntasDeDecada.Count)
         {
-            panelCorrecto.SetActive(true);
+            MostrarPreguntaActual();
         }
         else
         {
-            panelIncorrecto.SetActive(true);
-        }
+            // Pasar a la siguiente década
+            indiceDecadaActual++;
+            indicePreguntaActual = 0;
 
-        // Pasar a la siguiente pregunta después de 2 segundos
-        Invoke(nameof(AvanzarPregunta), 2f);
-    }
-
-    private void AvanzarPregunta()
-    {
-        if (quizController != null)
-            quizController.SiguientePregunta();
-        else
-            Debug.LogWarning("⚠️ No se asignó el QuizController en el QuestionManager.");
-    }
-
-    // Mezclar lista
-    private void Shuffle<T>(List<T> list)
-    {
-        for (int i = 0; i < list.Count; i++)
-        {
-            int rnd = Random.Range(i, list.Count);
-            T temp = list[rnd];
-            list[rnd] = list[i];
-            list[i] = temp;
+            if (indiceDecadaActual < decadasOrdenadas.Count)
+                MostrarPreguntaActual();
+            else
+                MostrarPanelFinal();
         }
     }
 
-    private void OnDisable()
+    private void MostrarPanelFinal()
     {
-        StopAllCoroutines();
-        if (botonesRespuestas != null)
-        {
-            foreach (var boton in botonesRespuestas)
-            {
-                if (boton != null)
-                    boton.onClick.RemoveAllListeners();
-            }
-        }
+        panelFinal.SetActive(true);
+        if (DebugUI.Instance != null)
+            DebugUI.Instance.Log("🎉 Se completaron todas las preguntas del JSON.");
+        Debug.Log("🎉 Se completaron todas las preguntas del JSON.");
     }
 }
